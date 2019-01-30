@@ -65,21 +65,26 @@ class MainListWidget extends State<MainList> {
                         ],
                       ),
                     )),
-                    Row(
-                      children: <Widget>[
-                        IconButton(
-                          color: Colors.blue,
-                          onPressed: () {
-                            SnackBar(content: Text("123"));
-                          },
-                          icon: Icon(Icons.access_alarm),
-                        ),
-                        Icon(
-                          Icons.ac_unit,
-                          color: Colors.green,
-                        ),
-                      ],
-                    )
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          IconButton(
+                            color: Colors.blue,
+                            onPressed: () {
+                              SnackBar(content: Text("123"));
+                            },
+                            icon: Icon(Icons.adb),
+                          ),
+                          Icon(
+                            Icons.ac_unit,
+                            color: Colors.green,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 )),
           );
