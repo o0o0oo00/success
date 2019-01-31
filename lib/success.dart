@@ -38,8 +38,32 @@ class MainList extends StatefulWidget {
   State<StatefulWidget> createState() => MainListWidget();
 }
 
-class MainListWidget extends State<MainList> {
+class MainListWidget extends State<MainList>
+    with SingleTickerProviderStateMixin {
+  Animation<double> animation;
+  AnimationController controller;
   List<Item> items;
+
+  @override
+  void initState() {
+    super.initState();
+    items = List<Item>.generate(
+        10, (i) => Item("标题 $i", "我今天吃饭了 $i", "18", "星期天", "12:12"));
+    controller =
+        AnimationController(duration: Duration(milliseconds: 400), vsync: this);
+    animation = new Tween(begin: 0.0, end: 100.0).animate(controller)
+      ..addListener(() {
+        setState(() {
+          // the state that has changed here is the animation object’s value
+        });
+      });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,22 +79,37 @@ class MainListWidget extends State<MainList> {
               print("${item.title}");
             },
             onHorizontalDragStart: (details) {
+              print("onStart");
               x = details.globalPosition.dx;
             },
             onHorizontalDragUpdate: (details) {
               distance = details.globalPosition.dx - x;
-//              print("Update = $distance");
               if (distance > 100 && once) {
+                print("Update = $distance");
+
                 print("left 2 right");
+                controller.forward();
                 once = false;
+                return;
+              }
+
+              if(distance < -100 && once) {
+                print("Update = $distance");
+
+                print("right 2 left");
+                controller.reverse();
+                once = false;
+                return;
               }
             },
             onHorizontalDragEnd: (details) {
+              print("onend");
               once = true;
             },
             child: Container(
               margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+              padding: EdgeInsets.fromLTRB(
+                  10.0, 10.0, animation.value.toDouble(), 10.0),
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(4.0),
