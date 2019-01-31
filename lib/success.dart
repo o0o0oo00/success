@@ -9,6 +9,18 @@ class SuccessDailyApp extends StatelessWidget {
       title: title,
       home: Scaffold(
           appBar: AppBar(
+            actions: <Widget>[
+              new IconButton(
+                icon: const Icon(Icons.add_circle),
+//                onPressed: _insert,
+                tooltip: 'insert a new item',
+              ),
+              new IconButton(
+                icon: const Icon(Icons.remove_circle),
+//                onPressed: _remove,
+                tooltip: 'remove the selected item',
+              ),
+            ],
             title: Text(title),
           ),
           body: Scaffold(
@@ -35,58 +47,76 @@ class MainListWidget extends State<MainList> {
         itemCount: items.length,
         itemBuilder: (context, index) {
           var item = items[index];
-          return Container(
-            margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-            padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.0),
-                border: Border.all(color: Colors.blue)),
-            child: GestureDetector(
-                onHorizontalDragStart: (detail) {},
-                onHorizontalDragEnd: (detail) {},
-                child: Row(
-                  children: <Widget>[
-                    Column(
+          var distance = 0.0;
+          var x = 0.0;
+          var once = true;
+          return GestureDetector(
+            onTap: () {
+              print("${item.title}");
+            },
+            onHorizontalDragStart: (details) {
+              x = details.globalPosition.dx;
+            },
+            onHorizontalDragUpdate: (details) {
+              distance = details.globalPosition.dx - x;
+//              print("Update = $distance");
+              if (distance > 100 && once) {
+                print("left 2 right");
+                once = false;
+              }
+            },
+            onHorizontalDragEnd: (details) {
+              once = true;
+            },
+            child: Container(
+              margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.0),
+                  border: Border.all(color: Colors.blue)),
+              child: Row(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      _MyText(item.day, 30.0, Colors.blue[300], null),
+                      _MyText(item.week, 12.0, Colors.blue[300], null)
+                    ],
+                  ),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _MyText(item.day, 30.0, Colors.blue[300], null),
-                        _MyText(item.week, 12.0, Colors.blue[300], null)
+                        Row(
+                          children: <Widget>[
+                            _MyText(item.time, 12.0, Colors.blue[300], null),
+                            Expanded(child: Text("")),
+                            Icon(
+                              Icons.ac_unit,
+                              size: 16,
+                              color: Colors.blue,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 6.0),
+                              child: Icon(
+                                Icons.access_alarm,
+                                size: 16,
+                                color: Colors.yellow,
+                              ),
+                            ),
+                          ],
+                        ),
+                        _MyText(item.title, 22.0, Colors.blue[600], null),
+                        _MyText(item.content, 16.0, Colors.blue[300], null),
                       ],
                     ),
-                    Expanded(
-                        child: Container(
-                      margin: EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          _MyText(item.time, 12.0, Colors.blue[300], null),
-                          _MyText(item.title, 22.0, Colors.blue[600], null),
-                          _MyText(item.content, 16.0, Colors.blue[300], null),
-                        ],
-                      ),
-                    )),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          IconButton(
-                            color: Colors.blue,
-                            onPressed: () {
-                              SnackBar(content: Text("123"));
-                            },
-                            icon: Icon(Icons.adb),
-                          ),
-                          Icon(
-                            Icons.ac_unit,
-                            color: Colors.green,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )),
+                  )),
+                ],
+              ),
+              key: Key(item.title),
+            ),
           );
         });
   }
@@ -96,12 +126,5 @@ class MainListWidget extends State<MainList> {
       margin: margin,
       child: Text(text, style: TextStyle(color: color, fontSize: size)),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    items = List<Item>.generate(
-        10, (i) => Item("标题 $i", "我今天吃饭了 $i", "18", "星期天", "12:12"));
   }
 }
