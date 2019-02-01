@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:success/model/Item.dart';
 
-
 class Detail extends StatelessWidget {
   Item item;
 
-  Detail(this.item);
+  Detail({this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,9 @@ class Detail extends StatelessWidget {
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
             color: Colors.white.withOpacity(0.5),
             onPressed: () {
-              Navigator.pop(context, );
+              Navigator.pop(
+                context,
+              );
             },
           ),
           title: null,
@@ -36,15 +37,14 @@ class DetailBodyStatus extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return DetailBody(item);
+    return DetailBody(item: item);
   }
-
 }
 
 class DetailBody extends State<DetailBodyStatus> {
   Item item;
 
-  DetailBody(this.item);
+  DetailBody({this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +53,20 @@ class DetailBody extends State<DetailBodyStatus> {
       color: Colors.blue[200],
       child: Column(
         children: <Widget>[
-          Text("${item.title}"),
-          EditableText(controller: TextEditingController(), focusNode: FocusNode(), style: TextStyle(), cursorColor:Colors.blue ),
+          Text("{item.title}"),
+          EditableText(
+              controller: TextEditingController(),
+              focusNode: FocusNode(),
+              style: TextStyle(),
+              cursorColor: Colors.blue),
           RichText(
             text: TextSpan(
               text: 'Hello ',
               style: DefaultTextStyle.of(context).style,
               children: <TextSpan>[
-                TextSpan(text: 'bold', style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: 'bold',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: ' world!'),
               ],
             ),

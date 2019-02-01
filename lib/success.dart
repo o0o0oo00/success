@@ -27,6 +27,14 @@ class SuccessDailyApp extends StatelessWidget {
           body: Scaffold(
             backgroundColor: Colors.blue[200],
             body: MainList(),
+            floatingActionButton: FloatingActionButton(
+                tooltip: 'Show explanation',
+                backgroundColor: Colors.blue,
+                child: Icon(Icons.adb),
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Detail()));
+                }),
           )),
     );
   }
@@ -43,7 +51,6 @@ List<Item> items;
 int currentIndex;
 
 class MainListWidget extends State<MainList> {
-
   @override
   void initState() {
     super.initState();
@@ -61,8 +68,6 @@ class MainListWidget extends State<MainList> {
           return ItemWidget(index);
         });
   }
-
-
 }
 
 class ItemWidgetState extends State<ItemWidget>
@@ -80,7 +85,7 @@ class ItemWidgetState extends State<ItemWidget>
     controller =
         AnimationController(duration: Duration(milliseconds: 600), vsync: this);
     final Animation curve =
-    CurvedAnimation(parent: controller, curve: Curves.bounceOut);
+        CurvedAnimation(parent: controller, curve: Curves.bounceOut);
     animation = new Tween(begin: 10.0, end: 100.0).animate(curve)
       ..addListener(() {
         setState(() {});
@@ -103,7 +108,10 @@ class ItemWidgetState extends State<ItemWidget>
       onTap: () {
         print("${item.title}");
         controller.reverse();
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Detail(item)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Detail(
+                  item: item,
+                )));
       },
       onHorizontalDragStart: (details) {
         x = details.globalPosition.dx;
@@ -141,34 +149,34 @@ class ItemWidgetState extends State<ItemWidget>
             ),
             Expanded(
                 child: Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              margin: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          _MyText(item.time, 12.0, Colors.blue[300], null),
-                          Expanded(child: Text("")),
-                          Icon(
-                            Icons.ac_unit,
-                            size: 16,
-                            color: Colors.blue,
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 6.0),
-                            child: Icon(
-                              Icons.access_alarm,
-                              size: 16,
-                              color: Colors.yellow,
-                            ),
-                          ),
-                        ],
+                      _MyText(item.time, 12.0, Colors.blue[300], null),
+                      Expanded(child: Text("")),
+                      Icon(
+                        Icons.ac_unit,
+                        size: 16,
+                        color: Colors.blue,
                       ),
-                      _MyText(item.title, 22.0, Colors.blue[600], null),
-                      _MyText(item.content, 16.0, Colors.blue[300], null),
+                      Container(
+                        margin: EdgeInsets.only(left: 6.0),
+                        child: Icon(
+                          Icons.access_alarm,
+                          size: 16,
+                          color: Colors.yellow,
+                        ),
+                      ),
                     ],
                   ),
-                )),
+                  _MyText(item.title, 22.0, Colors.blue[600], null),
+                  _MyText(item.content, 16.0, Colors.blue[300], null),
+                ],
+              ),
+            )),
           ],
         ),
         key: Key(item.title),
@@ -185,7 +193,6 @@ class ItemWidgetState extends State<ItemWidget>
 }
 
 class ItemWidget extends StatefulWidget {
-
   int index;
 
   @override
