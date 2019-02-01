@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:success/detail.dart';
 import 'package:success/model/Item.dart';
 
 class SuccessDailyApp extends StatelessWidget {
@@ -101,6 +102,8 @@ class ItemWidgetState extends State<ItemWidget>
     return GestureDetector(
       onTap: () {
         print("${item.title}");
+        controller.reverse();
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Detail(item)));
       },
       onHorizontalDragStart: (details) {
         x = details.globalPosition.dx;
