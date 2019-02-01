@@ -5,38 +5,33 @@ import 'package:success/model/Item.dart';
 class SuccessDailyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var title = "Success!";
     return MaterialApp(
-      title: title,
-      home: Scaffold(
-          appBar: AppBar(
-            actions: <Widget>[
-              new IconButton(
-                icon: const Icon(Icons.add_circle),
-//                onPressed: _insert,
-                tooltip: 'insert a new item',
-              ),
-              new IconButton(
-                icon: const Icon(Icons.remove_circle),
-//                onPressed: _remove,
-                tooltip: 'remove the selected item',
-              ),
-            ],
-            title: Text(title),
-          ),
-          body: Scaffold(
-            backgroundColor: Colors.blue[200],
-            body: MainList(),
-            floatingActionButton: FloatingActionButton(
-                tooltip: 'Show explanation',
-                backgroundColor: Colors.blue,
-                child: Icon(Icons.adb),
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Detail()));
-                }),
-          )),
+      home: Home(),
     );
+  }
+}
+
+class Home extends StatelessWidget {
+  var title = "Success!";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Scaffold(
+          backgroundColor: Colors.blue[200],
+          body: MainList(),
+          floatingActionButton: FloatingActionButton(
+              tooltip: 'Show explanation',
+              backgroundColor: Colors.blue,
+              child: Icon(Icons.adb),
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Detail()));
+              }),
+        ));
   }
 }
 
@@ -77,37 +72,23 @@ class ItemWidgetState extends State<ItemWidget>
   int index;
   Item item;
 
+  double distance = 0.0;
+
   ItemWidgetState(@required this.index);
 
   @override
   void initState() {
     super.initState();
-    controller =
-        AnimationController(duration: Duration(milliseconds: 600), vsync: this);
-    final Animation curve =
-        CurvedAnimation(parent: controller, curve: Curves.bounceOut);
-    animation = new Tween(begin: 10.0, end: 100.0).animate(curve)
-      ..addListener(() {
-        setState(() {});
-      });
     item = items[index];
   }
 
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var distance = 0.0;
     var x = 0.0;
     var once = true;
     return GestureDetector(
       onTap: () {
         print("${item.title}");
-        controller.reverse();
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => Detail(
                   item: item,
@@ -117,9 +98,13 @@ class ItemWidgetState extends State<ItemWidget>
         x = details.globalPosition.dx;
       },
       onHorizontalDragUpdate: (details) {
-        distance = details.globalPosition.dx - x;
+        setState(() {
+          distance = details.globalPosition.dx - x;
+          if(distance < 0){
+            distance = 0;
+          }
+        });
         if (distance > 100 && once) {
-          controller.forward();
           currentIndex = index;
           once = false;
           return;
@@ -130,7 +115,7 @@ class ItemWidgetState extends State<ItemWidget>
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(
-            currentIndex == index ? animation.value.toDouble() : 10.0,
+            currentIndex == index ? distance : 10.0,
             10.0,
             10.0,
             0.0),
